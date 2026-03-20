@@ -12,6 +12,10 @@
 
 **核心理念：** 不自建聊天室、不經手金錢，僅做資訊媒合，將社交互動導流回 Threads 平台。
 
+## 🖥️ Demo
+
+開啟 `index.html` 即可在瀏覽器中體驗完整功能（CDN 載入 React，無需安裝）。
+
 ## ✨ 功能
 
 ### 🔐 會員系統
@@ -59,7 +63,11 @@
 
 ## 🚀 快速開始
 
-### 本地開發
+### 直接開啟（最簡單）
+
+雙擊 `index.html` 即可在瀏覽器中執行，無需安裝任何依賴。
+
+### 本地開發（使用 Vite）
 
 ```bash
 # 安裝依賴
@@ -75,45 +83,42 @@ npm run build
 npm run preview
 ```
 
-### 部署至 Antigravity.ai
+### 部署
 
-1. 在 [Antigravity.ai](https://antigravity.ai) 建立新專案
-2. 連結此 GitHub Repo，或手動上傳檔案
-3. Build Command: `npm run build`
-4. Output Directory: `dist`
-5. 部署完成！
-
-### 部署至其他平台
-
-**Vercel:**
-```bash
-npx vercel
-```
-
-**Netlify:**
-- Build command: `npm run build`
-- Publish directory: `dist`
-
-**GitHub Pages:**
+**GitHub Pages：**
 ```bash
 npm run build
 # 將 dist/ 資料夾內容推送到 gh-pages 分支
 ```
 
+**Vercel / Netlify：**
+- Build command: `npm run build`
+- Output directory: `dist`
+
 ## 📁 專案結構
 
 ```
 couka-mahjong/
-├── index.html          # HTML 入口
+├── index.html          # 獨立版 HTML（CDN 載入 React，可直接瀏覽器開啟）
 ├── package.json        # 專案設定與依賴
 ├── vite.config.js      # Vite 建置設定
 ├── .gitignore          # Git 忽略清單
 ├── LICENSE             # MIT 授權
 ├── README.md           # 本文件
 └── src/
-    ├── main.jsx        # React 入口
+    ├── main.jsx        # React 入口（Vite 版）
     └── App.jsx         # 主應用程式（全部功能）
 ```
+
+## 🔧 技術棧
+
+| 技術 | 用途 |
+|------|------|
+| React 18 | UI 框架 |
+| Vite 5 | 開發伺服器與建置工具 |
+| Babel (CDN) | JSX 即時編譯（`index.html` 獨立版） |
+| Noto Sans TC | 中文字型 |
+| DM Serif Display | 品牌標題字型 |
 
 ## ⚠️ 免責聲明
 
