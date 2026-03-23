@@ -582,6 +582,7 @@ function Profile({ user, games, my, bl, onUnblock, onClose, onDelete, onLogout, 
 // ─── App ────────────────────────────────────────────────────────────
 function App() {
   const [user, setUser] = useState(null); const [page, setPage] = useState("lobby"); const [games, setGames] = useState([]); const [toast, setToast] = useState(null); const [dOk, setDOk] = useState(false); const [showD, setShowD] = useState(false); const [rptId, setRptId] = useState(null); const [bl, setBl] = useState([]); const [my, setMy] = useState([]); const [dtl, setDtl] = useState(null);
+  const [showL, setShowL] = useState(false); const [lgTid, setLgTid] = useState(""); const [lgName, setLgName] = useState("");
   const [sheetLoading, setSheetLoading] = useState(true);
   const [sheetError, setSheetError] = useState(false);
 
@@ -627,7 +628,8 @@ function App() {
   useEffect(() => { const iv = setInterval(() => { setGames(p => p.map(g => { const s = getStat(g); return s === "expired" && g.status !== "expired" ? { ...g, status: "expired" } : g })) }, 6e4); return () => clearInterval(iv) }, []);
 
   const flash = (m) => { setToast(m); setTimeout(() => setToast(null), 2500) };
-  const login = () => { if (!dOk) { setShowD(true); return; } setUser({ name: "我的帳號", avatar: "🀄", tid: "@my_threads", bio: "熱愛麻將" }); flash("登入成功！") };
+  const login = () => { if (!dOk) { setShowD(true); return; } setShowL(true); };
+  const doLg = () => { if(!lgTid.trim() || !lgName.trim()){ flash("請填寫帳號與暱稱"); return; } const t = lgTid.trim().startsWith("@") ? lgTid.trim() : "@"+lgTid.trim(); setUser({ name: lgName.trim(), avatar: "🀄", tid: t, bio: "" }); setShowL(false); flash("登入成功！") };
   const post = (d) => { const g = { id: Date.now(), host: user, ...d, filled: 0, status: "open", reports: 0 }; setGames(p => [g, ...p]); setMy(p => [g.id, ...p]); setPage("lobby"); flash("發布成功！🀄") };
   const closeG = (id) => { setGames(p => p.map(g => g.id === id ? { ...g, status: "closed" } : g)); flash("已標記已滿局"); setDtl(null) };
   const delG = (id) => { setGames(p => p.filter(g => g.id !== id)); setMy(p => p.filter(i => i !== id)); flash("已刪除"); setDtl(null) };
@@ -702,6 +704,28 @@ function App() {
       </div>
       <button style={{ ...bGh, marginTop: 8, width: "100%" }} onClick={() => setRptId(null)}>取消</button>
     </div></Ov>}
+
+    {/* Login */}
+    {showL && <Ov onClose={() => setShowL(false)}>
+      <div style={{ padding: 24, paddingBottom: 20 }}>
+        <div style={{ fontSize: 20, fontWeight: 800, marginBottom: 8 }}>🔗 連結 Threads 帳號</div>
+        <div style={{ color: C.tx3, fontSize: 13, marginBottom: 20, lineHeight: 1.6 }}>請輸入您的真實 Threads 帳號與暱稱，這將作為您在平台上的主要身分。</div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 14, marginBottom: 24 }}>
+          <div>
+            <div style={{ fontSize: 11, color: C.tx2, fontWeight: 700, marginBottom: 6 }}>Threads 帳號 (ID) <span style={{ color: C.red }}>*</span></div>
+            <input style={{ background: C.inp, color: C.tx, border: "1px solid " + C.bd, borderRadius: 8, padding: "10px 12px", fontFamily: "inherit", fontSize: 14, width: "100%", outline: "none" }} placeholder="例如: mahjong_tw (不需 @)" value={lgTid} onChange={e => setLgTid(e.target.value)} />
+          </div>
+          <div>
+            <div style={{ fontSize: 11, color: C.tx2, fontWeight: 700, marginBottom: 6 }}>顯示暱稱 <span style={{ color: C.red }}>*</span></div>
+            <input style={{ background: C.inp, color: C.tx, border: "1px solid " + C.bd, borderRadius: 8, padding: "10px 12px", fontFamily: "inherit", fontSize: 14, width: "100%", outline: "none" }} placeholder="例如: 麻將小王子" value={lgName} onChange={e => setLgName(e.target.value)} />
+          </div>
+        </div>
+        <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
+          <button style={{ ...bOut, padding: "10px 16px" }} onClick={() => setShowL(false)}>取消</button>
+          <button style={{ ...bAcc, padding: "10px 20px" }} onClick={doLg}>確認登入</button>
+        </div>
+      </div>
+    </Ov>}
 
     {/* Detail */}
     {dtlG && <Detail game={dtlG} user={user} onClose={() => setDtl(null)} onReport={() => { setDtl(null); setRptId(dtlG.id) }} onBlock={() => { block(dtlG.host.tid); setDtl(null) }} onFlash={flash} onCloseGame={closeG} onDeleteGame={delG} isMine={my.includes(dtlG.id)} />}
